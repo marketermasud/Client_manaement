@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clients · PPC Ads by Masud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body data-page="clients" data-title="Clients" data-eyebrow="Client Management">
+
+<div class="mp-sidebar-backdrop" id="mpBackdrop"></div>
+<div class="mp-shell">
+  <aside class="mp-sidebar" id="mpSidebar"></aside>
+  <div class="mp-main">
+    <header class="mp-topbar" id="mpTopbar"></header>
+
+    <main class="mp-content">
+      <div class="mp-card">
+        <div class="mp-card-head flex-wrap gap-2">
+          <div class="mp-card-title">All Clients</div>
+          <button class="btn btn-mp-primary" id="addClientBtn" type="button">
+            <i class="bi bi-plus-lg me-1"></i>Add Client
+          </button>
+        </div>
+        <div class="mp-card-body pb-2">
+          <div class="row g-2">
+            <div class="col-12 col-md-4">
+              <div class="mp-search-box" style="max-width:100%">
+                <i class="bi bi-search"></i>
+                <input type="text" class="form-control" id="clientSearch" placeholder="Search name, ID, phone, email, website…">
+              </div>
+            </div>
+            <div class="col-6 col-md-2">
+              <select class="form-select" id="filterStatus">
+                <option value="all">All Status</option>
+                <option>Active</option><option>Paused</option><option>Completed</option><option>Lead</option><option>Inactive</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-3">
+              <select class="form-select" id="filterType">
+                <option value="all">All Business Types</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-3">
+              <select class="form-select" id="filterCountry">
+                <option value="all">All Countries</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="mp-scroll-x">
+          <table class="table mp-table mb-0">
+            <thead><tr>
+              <th>Client ID</th><th>Client</th><th>Business Type</th><th>Country</th><th>Contact</th>
+              <th>Status</th><th>Start Date</th><th>Total Revenue</th><th class="text-end">Actions</th>
+            </tr></thead>
+            <tbody id="clientsBody"></tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center px-3 py-3 border-top" style="border-color:var(--mp-border) !important;">
+          <div class="small text-muted-mp" id="clientsCount"></div>
+          <nav><ul class="pagination pagination-sm mb-0" id="clientsPagination"></ul></nav>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add / Edit Client Modal -->
+<div class="modal fade" id="clientModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:16px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle">Add Client</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="clientForm" novalidate>
+      <div class="modal-body">
+        <input type="hidden" id="cf_clientId">
+        <h6 class="text-muted-mp text-uppercase small fw-bold mb-3" style="letter-spacing:.05em;">Basic Information</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6"><label class="form-label mp-required">Full Name</label><input class="form-control" id="cf_fullName" required></div>
+          <div class="col-md-6"><label class="form-label mp-required">Business Name</label><input class="form-control" id="cf_businessName" required></div>
+          <div class="col-md-6"><label class="form-label mp-required">Business Type</label>
+            <select class="form-select" id="cf_businessType" required>
+              <option value="">Select type…</option>
+              <option>Cleaning Services</option><option>HVAC / AC Repair</option><option>Plumbing</option>
+              <option>Roofing</option><option>Junk Removal</option><option>Auto Detailing</option>
+              <option>Web Design</option><option>Other</option>
+            </select>
+          </div>
+          <div class="col-md-6"><label class="form-label mp-required">Country</label><input class="form-control" id="cf_country" required></div>
+          <div class="col-md-4"><label class="form-label mp-required">Phone</label><input class="form-control" id="cf_phone" required></div>
+          <div class="col-md-4"><label class="form-label mp-required">Email</label><input type="email" class="form-control" id="cf_email" required></div>
+          <div class="col-md-4"><label class="form-label">WhatsApp</label><input class="form-control" id="cf_whatsapp"></div>
+        </div>
+        <h6 class="text-muted-mp text-uppercase small fw-bold mb-3" style="letter-spacing:.05em;">Online Presence</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6"><label class="form-label">Website</label><input class="form-control" id="cf_website" placeholder="https://"></div>
+          <div class="col-md-6"><label class="form-label">Facebook</label><input class="form-control" id="cf_facebook"></div>
+          <div class="col-md-4"><label class="form-label">Instagram</label><input class="form-control" id="cf_instagram"></div>
+          <div class="col-md-4"><label class="form-label">LinkedIn</label><input class="form-control" id="cf_linkedin"></div>
+          <div class="col-md-4"><label class="form-label">Other Social URL</label><input class="form-control" id="cf_other"></div>
+        </div>
+        <h6 class="text-muted-mp text-uppercase small fw-bold mb-3" style="letter-spacing:.05em;">Advertising Information</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4"><label class="form-label">Google Ads Customer ID</label><input class="form-control" id="cf_googleAdsId" placeholder="123-456-7890"></div>
+          <div class="col-md-4"><label class="form-label">Meta Ads Account ID</label><input class="form-control" id="cf_metaAdsId"></div>
+          <div class="col-md-4"><label class="form-label">Google Business Profile URL</label><input class="form-control" id="cf_gbpUrl"></div>
+        </div>
+        <h6 class="text-muted-mp text-uppercase small fw-bold mb-3" style="letter-spacing:.05em;">Work Information</h6>
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label mp-required">Work Start Date</label><input type="date" class="form-control" id="cf_startDate" required></div>
+          <div class="col-md-4"><label class="form-label">Work End Date</label><input type="date" class="form-control" id="cf_endDate"></div>
+          <div class="col-md-4"><label class="form-label mp-required">Client Status</label>
+            <select class="form-select" id="cf_status" required>
+              <option>Active</option><option>Paused</option><option>Completed</option><option>Lead</option><option>Inactive</option>
+            </select>
+          </div>
+          <div class="col-12"><label class="form-label">Notes</label><textarea class="form-control" id="cf_notes" rows="2"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-mp-outline" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-mp-primary px-4">Save Client</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="mp-toast-stack" id="mpToastStack"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/logo-data.js"></script>
+<script src="js/currencies-data.js"></script>
+<script src="js/db.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/components.js"></script>
+<script src="js/clients.js"></script>
+</body>
+</html>

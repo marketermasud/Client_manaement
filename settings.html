@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings · PPC Ads by Masud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body data-page="settings" data-title="Settings" data-eyebrow="Workspace">
+
+<div class="mp-sidebar-backdrop" id="mpBackdrop"></div>
+<div class="mp-shell">
+  <aside class="mp-sidebar" id="mpSidebar"></aside>
+  <div class="mp-main">
+    <header class="mp-topbar" id="mpTopbar"></header>
+
+    <main class="mp-content">
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="mp-card">
+            <div class="mp-card-head"><div class="mp-card-title">Agency Profile</div></div>
+            <div class="mp-card-body">
+              <form id="agencyForm">
+                <div class="row g-3">
+                  <div class="col-md-6"><label class="form-label">Agency Name</label><input class="form-control" id="st_agencyName"></div>
+                  <div class="col-md-6"><label class="form-label">Owner Name</label><input class="form-control" id="st_ownerName"></div>
+                  <div class="col-md-6"><label class="form-label">Contact Email</label><input type="email" class="form-control" id="st_email"></div>
+                  <div class="col-md-6"><label class="form-label">Base / Reporting Currency</label>
+                    <select class="form-select" id="st_baseCurrency"><option value="BDT">BDT — Bangladeshi Taka</option></select>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-mp-primary mt-3">Save Changes</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="mp-card mt-3">
+            <div class="mp-card-head"><div class="mp-card-title">Admin Account</div></div>
+            <div class="mp-card-body">
+              <div class="mp-kv"><span class="k">Name</span><span class="v" id="adminName"></span></div>
+              <div class="mp-kv"><span class="k">Email</span><span class="v" id="adminEmail"></span></div>
+              <div class="mp-kv"><span class="k">Role</span><span class="v">Admin</span></div>
+              <button class="btn btn-mp-outline mt-3" id="logoutBtn"><i class="bi bi-box-arrow-right me-1"></i>Log Out</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="mp-card">
+            <div class="mp-card-head"><div class="mp-card-title">Roles &amp; Access (Preview)</div></div>
+            <div class="mp-card-body">
+              <p class="small text-muted-mp">
+                The app is prepared for role-based access. Once Firebase Authentication and Firestore Security Rules
+                are connected, these roles can be enforced server-side — never rely on the frontend alone for security.
+              </p>
+              <div class="d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2 p-2" style="background:var(--mp-cloud); border-radius:10px; font-size:13px;"><i class="bi bi-shield-check text-muted-mp"></i>Admin — full access</div>
+                <div class="d-flex align-items-center gap-2 p-2" style="background:var(--mp-cloud); border-radius:10px; font-size:13px;"><i class="bi bi-shield-check text-muted-mp"></i>Accountant — clients, payments, revenue, reports</div>
+                <div class="d-flex align-items-center gap-2 p-2" style="background:var(--mp-cloud); border-radius:10px; font-size:13px;"><i class="bi bi-shield-check text-muted-mp"></i>Assistant — clients, services (no payments)</div>
+                <div class="d-flex align-items-center gap-2 p-2" style="background:var(--mp-cloud); border-radius:10px; font-size:13px;"><i class="bi bi-shield-check text-muted-mp"></i>Viewer — read-only dashboard</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mp-card mt-3">
+            <div class="mp-card-head"><div class="mp-card-title">Firebase Connection</div></div>
+            <div class="mp-card-body">
+              <div class="mp-kv"><span class="k">Mode</span><span class="v" id="fbMode">—</span></div>
+              <div class="mp-kv"><span class="k">Project</span><span class="v" id="fbProject">—</span></div>
+              <div class="mp-kv"><span class="k">Collections</span><span class="v">clients, services, payments, currencies, activities, settings</span></div>
+              <p class="small text-muted-mp mt-2 mb-0" id="fbNote">Connected — changes save straight to Firestore and sync live across devices.</p>
+            </div>
+          </div>
+
+          <div class="mp-card mt-3">
+            <div class="mp-card-head"><div class="mp-card-title">Danger Zone</div></div>
+            <div class="mp-card-body">
+              <p class="small text-muted-mp">Permanently delete every client, service, payment, and activity log. Currencies and agency settings are kept. This cannot be undone.</p>
+              <button class="btn btn-mp-outline text-danger" id="clearAllBtn"><i class="bi bi-exclamation-triangle me-1"></i>Clear All Data</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="mp-toast-stack" id="mpToastStack"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/logo-data.js"></script>
+<script src="js/currencies-data.js"></script>
+<script src="js/db.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/components.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    MPAuth.ready(function () {
+      MPDB.init(function () {
+        renderSettingsPage();
+        window.addEventListener("mpdb:update", renderSettingsPage);
+      });
+    });
+  });
+
+  function renderSettingsPage() {
+    const settings = MPDB.getSettings();
+    document.getElementById("st_agencyName").value = settings.agencyName;
+    document.getElementById("st_ownerName").value = settings.ownerName;
+    document.getElementById("st_email").value = settings.email;
+    document.getElementById("adminName").textContent = (MPAuth.currentUser() || {}).name || settings.admin.name;
+    document.getElementById("adminEmail").textContent = (MPAuth.currentUser() || {}).email || settings.admin.email;
+
+    const live = MPDB.isFirebaseActive();
+    document.getElementById("fbMode").innerHTML = live
+      ? '<span class="mp-badge st-active">Live — Firestore</span>'
+      : '<span class="mp-badge st-inactive">Local demo data</span>';
+    document.getElementById("fbProject").textContent = live && typeof MP_FIREBASE_CONFIG !== "undefined" ? MP_FIREBASE_CONFIG.projectId : "—";
+    document.getElementById("fbNote").textContent = live
+      ? "Connected — changes save straight to Firestore and sync live across devices."
+      : "Not connected. Set MP_USE_FIREBASE = true in js/firebase-config.js with your project credentials to go live.";
+  }
+
+  document.getElementById("agencyForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    MPDB.updateSettings({
+      agencyName: document.getElementById("st_agencyName").value,
+      ownerName: document.getElementById("st_ownerName").value,
+      email: document.getElementById("st_email").value
+    });
+    MPUI.toast("Settings saved successfully.");
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", function () {
+    MPAuth.logout().then(() => window.location.href = "login.html");
+  });
+
+  document.getElementById("clearAllBtn").addEventListener("click", function () {
+    MPUI.confirmAction("Delete every client, service, payment, and activity log? This cannot be undone.", () => {
+      MPDB.clearAllData();
+      MPUI.toast("All data cleared.", "danger");
+      if (!MPDB.isFirebaseActive()) setTimeout(() => window.location.reload(), 600);
+    });
+  });
+</script>
+</body>
+</html>
