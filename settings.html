@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <title>Settings · PPC Ads by Masud</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
 </head>
 <body data-page="settings" data-title="Settings" data-eyebrow="Workspace">
 
@@ -77,6 +78,15 @@
           </div>
 
           <div class="mp-card mt-3">
+            <div class="mp-card-head"><div class="mp-card-title">Google Drive (Payment Proofs)</div></div>
+            <div class="mp-card-body">
+              <div class="mp-kv"><span class="k">Mode</span><span class="v" id="driveMode">—</span></div>
+              <div class="mp-kv"><span class="k">Storage folder</span><span class="v" id="driveFolder">—</span></div>
+              <p class="small text-muted-mp mt-2 mb-0" id="driveNote">Photos upload straight into a folder on your own Google Drive — nothing is stored on our servers.</p>
+            </div>
+          </div>
+
+          <div class="mp-card mt-3">
             <div class="mp-card-head"><div class="mp-card-title">Danger Zone</div></div>
             <div class="mp-card-body">
               <p class="small text-muted-mp">Permanently delete every client, service, payment, and activity log. Currencies and agency settings are kept. This cannot be undone.</p>
@@ -92,15 +102,18 @@
 <div class="mp-toast-stack" id="mpToastStack"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/logo-data.js"></script>
-<script src="js/currencies-data.js"></script>
-<script src="js/db.js"></script>
+<script src="logo-data.js"></script>
+<script src="currencies-data.js"></script>
+<script src="db.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
-<script src="js/firebase-config.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/components.js"></script>
+<script src="firebase-config.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="drive-config.js"></script>
+<script src="drive.js"></script>
+<script src="auth.js"></script>
+<script src="components.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     MPAuth.ready(function () {
@@ -126,7 +139,16 @@
     document.getElementById("fbProject").textContent = live && typeof MP_FIREBASE_CONFIG !== "undefined" ? MP_FIREBASE_CONFIG.projectId : "—";
     document.getElementById("fbNote").textContent = live
       ? "Connected — changes save straight to Firestore and sync live across devices."
-      : "Not connected. Set MP_USE_FIREBASE = true in js/firebase-config.js with your project credentials to go live.";
+      : "Not connected. Set MP_USE_FIREBASE = true in firebase-config.js with your project credentials to go live.";
+
+    const driveReady = typeof MPDrive !== "undefined" && MPDrive.isConfigured();
+    document.getElementById("driveMode").innerHTML = driveReady
+      ? '<span class="mp-badge st-active">Connected</span>'
+      : '<span class="mp-badge st-inactive">Not connected</span>';
+    document.getElementById("driveFolder").textContent = driveReady && typeof MP_DRIVE_ROOT_FOLDER_NAME !== "undefined" ? MP_DRIVE_ROOT_FOLDER_NAME : "—";
+    document.getElementById("driveNote").textContent = driveReady
+      ? "Photos upload straight into a folder on your own Google Drive — nothing is stored on our servers."
+      : "Not connected. Add your OAuth Client ID in drive-config.js to enable payment-proof photo uploads (see README).";
   }
 
   document.getElementById("agencyForm").addEventListener("submit", function (e) {
