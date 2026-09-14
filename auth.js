@@ -78,10 +78,20 @@ const MPAuth = (function () {
     });
   }
 
+  // Identifies the login page reliably even when a host (e.g. Cloudflare
+  // Pages, GitHub Pages) rewrites clean URLs — "/login", "/login/", and
+  // "/login.html" (at any folder depth) all count. A naive
+  // pathname.endsWith("login.html") check misses the clean-URL cases and
+  // causes an infinite redirect-reload loop on hosts that strip ".html".
+  function isOnLoginPage() {
+    const lastSegment = window.location.pathname.split("/").filter(Boolean).pop() || "";
+    return lastSegment.replace(/\.html$/i, "") === "login";
+  }
+
   // Every protected page calls this once. Resolves with the user once we're
   // sure they're signed in; otherwise redirects to login.html.
   function ready(callback) {
-    const onLoginPage = window.location.pathname.endsWith("login.html");
+    const onLoginPage = isOnLoginPage();
     if (isFirebaseActive()) {
       mpFirebaseAuth.onAuthStateChanged(user => {
         if (user) {
@@ -101,5 +111,5 @@ const MPAuth = (function () {
     }
   }
 
-  return { currentUser, isLoggedIn, login, logout, resetPassword, ready, isFirebaseActive };
+  return { currentUser, isLoggedIn, login, logout, resetPassword, ready, isFirebaseActive, isOnLoginPage };
 })();

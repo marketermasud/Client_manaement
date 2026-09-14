@@ -148,6 +148,10 @@ If you'd rather host it separately from your GitHub Pages site instead (e.g. und
 3. You'll get a live link immediately at `https://client-management-efcae.web.app`.
 4. To use `panel.masudppc.com` instead: **Firebase Console → Hosting → Add custom domain** → enter it → add the TXT/A/CNAME records it shows you to masudppc.com's DNS. SSL is issued automatically within a few hours.
 
+### Alternative: Cloudflare Pages (or any host with "clean URLs")
+
+Connecting this repo to Cloudflare Pages works the same way as GitHub Pages — just point it at the repo and it deploys automatically on every push. One thing to know: Cloudflare Pages (like several other static hosts) serves **clean URLs** by default, showing `/login` in the address bar instead of `/login.html`. The app already accounts for this — the login/session check recognizes a page as "the login page" whether the URL is `/login`, `/login/`, or `/login.html`, at any folder depth. If you ever see the generated link reload itself over and over right after connecting a new host, it means that host rewrites URLs differently — copy the exact URL pattern it produces for the login page and it can be added to the same check in `auth.js` (`isOnLoginPage`).
+
 ---
 
 
