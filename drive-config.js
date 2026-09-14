@@ -15,7 +15,7 @@
    Drive files.
    ========================================================= */
 
-const MP_DRIVE_CLIENT_ID = "YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com";
+const MP_DRIVE_CLIENT_ID = "778896753243-i2233fcb7akvntorakrb6pamd01e5r7g.apps.googleusercontent.com";
 
 // The app creates (or reuses) this folder the first time you upload a
 // proof photo, with a subfolder per client and per payment inside it.
